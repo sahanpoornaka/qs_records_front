@@ -6,5 +6,5 @@ export const VIEW = '/view';
 export const USER = '/user'
 export const ABOUT = '/about'
 
-export const ENDPOINT = 'http://localhost:8000';
-// export const ENDPOINT = 'https://povkt0.deta.dev';
+// export const ENDPOINT = 'http://localhost:8000';
+export const ENDPOINT = 'https://povkt0.deta.dev';

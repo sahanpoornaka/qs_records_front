@@ -157,7 +157,7 @@ const ResponsiveAppBar = () => {
             </Typography>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4e5ejfj5szhpkPSQ5DI8Y5kkEgi0LS_Q4pLLQidFV&s" />
+                <Avatar alt="Remy Sharp" src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png" />
               </IconButton>
             </Tooltip>
             <Menu

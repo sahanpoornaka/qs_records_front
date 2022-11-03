@@ -1,48 +1,36 @@
 import React from 'react';
-import {Link} from 'react-router-dom'
+import AppBar from './App'
 
-import * as ROUTES from '../../constants/routes'
-
-
-// // const Navigation = () => {
-// //     return (<div>
-// //         <ul>
-// //             <li>
-// //                 <Link to={
-// //                     ROUTES.HOME
-// //                 }>
-// //                     Home
-// //                 </Link>
-// //             </li>
-// //             <li>
-// //                 <Link to={
-// //                     ROUTES.PROJECTS
-// //                 }>
-// //                     Projects
-// //                 </Link>
-// //             </li>
-// //         </ul>
-// //     </div>);
-// // };
 
 const Navigation = () => {
-    return (<ul>
-        <li>
-            <Link to={
-                ROUTES.HOME
-            }>Home</Link>
-        </li>
-        <li>
-            <Link to={
-                ROUTES.PROJECTS
-            }>Projects</Link>
-        </li>
-        <li>
-            <Link to={
-                ROUTES.ABOUT
-            }>About</Link>
-        </li>
-    </ul>);;
+    // return (<ul>
+    //     <li>
+    //         <Link to={
+    //             ROUTES.NEW_PROJECT
+    //         }>Add New Project</Link>
+    //     </li>
+    //     <li>
+    //         <Link to={
+    //             ROUTES.NEW_LEVEL
+    //         }>Add New Level</Link>
+    //     </li>
+    //     <li>
+    //         <Link to={
+    //             ROUTES.NEW_ELEMENT
+    //         }>Add New Element</Link>
+    //     </li>
+    //     <li>
+    //         <Link to={
+    //             ROUTES.VIEW
+    //         }>View Project</Link>
+    //     </li>
+    //     <li>
+    //         <Link to={
+    //             ROUTES.ABOUT
+    //         }>About</Link>
+    //     </li>
+    // </ul>)
+    return (<AppBar/>)
 }
 
 export default Navigation;

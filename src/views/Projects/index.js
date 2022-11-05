@@ -1,5 +1,8 @@
 import { Box, Button, Grid, TextField } from "@mui/material";
 import { useState } from "react";
+import axios from "axios";
+
+import * as BACKEND from '../../constants/routes';
 
 const style = {
     position: 'absolute',
@@ -25,7 +28,24 @@ const AddProjectPage = () => {
     // Form Data
     const [formValues, setFormValues] = useState(INIT_DATA);
 
-    const handleSubmit = () => {
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const projectData = {
+            "project_name": formValues.projectName,
+            "project_description": formValues.projectDescription,
+            "project_remarks": formValues.projectRemarks,
+            "num_floors": formValues.numFloors,
+            "floors": {}
+          }
+        await axios.post(BACKEND.ENDPOINT + "/project/add-project", projectData)
+        .then(response => {
+            if (response.status === 200) {
+                alert("Project Added Successfully!");
+            } else {
+                alert("Some Error Occured While Adding the Project");
+            }
+        })
 
     }
 

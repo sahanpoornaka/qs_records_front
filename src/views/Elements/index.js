@@ -10,7 +10,10 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {useState} from "react";
+import axios from "axios";
+import {useEffect, useState} from "react";
+
+import * as BACKEND from '../../constants/routes';
 
 const style = {
     position: 'absolute',
@@ -27,11 +30,64 @@ const style = {
 const INIT_DATA = {
 }
 
-const AddElementPage = () => { // Form Data
+const AddElementPage = () => { 
+    
+    const [projectList, setProjectList] = useState([]);
+    const [projectData, setProjectData] = useState("");
+
+    const [levelList, setLevelList] = useState([]);
+    const [levelData, setLevelData] = useState("");
+
+    const [elementList, setElementList] = useState([]);
+    const [elementData, setElementData] = useState("");
+
+    // Form Data
+    const [file, setFile] = useState(null);
     const [formValues, setFormValues] = useState(INIT_DATA);
 
-    const handleSubmit = (event) => {
+    const fetchProjectData = async () => {
+        await axios.get(BACKEND.ENDPOINT + "/app-data/list_all_projects").then(response => {
+            setProjectList(response.data)
+        })
+    }
+
+    const fetchLevelData = async () => {
+        if (typeof(projectData.project_id) !== "undefined") {
+            await axios.get(BACKEND.ENDPOINT + "/app-data/list_all_levels/" + projectData.project_id).then(response => {setLevelList(response.data.floors)})
+        }
+    }
+
+    const fetchElementData = async () => {
+        await axios.get(BACKEND.ENDPOINT+ "/app-data/list_all_add_elements").then(response => {setElementList(response.data)})
+    }
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
+
+        try {
+            const formData = new FormData();
+            formData.append("image_file", file);
+            formData.append("project_id", projectData.project_id);
+            formData.append("floor_id", levelData.floor_id);
+            formData.append("element_id", elementData.element_id);
+            const config = {
+                headers: {
+                    "content-type": "multipart/form-data"
+                }
+            };
+            const response = await axios.post(BACKEND.ENDPOINT + `/project/add-element`, formData, config);
+            if (response.status === 200){
+                alert("Element Added Successfully");
+            } else {
+                alert("Error Occured While Adding Element!");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleFile = (e) => {
+        setFile(e.target.files[0]);
     }
 
     const handleInputChange = (e) => {
@@ -42,73 +98,66 @@ const AddElementPage = () => { // Form Data
         });
     };
 
+    useEffect(() => {
+        fetchProjectData();
+        fetchElementData();
+    }, [])
+
+    useEffect(() => {
+        fetchLevelData();
+    }, [projectData]);
+
     return (
         <Box sx={style}>
             <form onSubmit={handleSubmit}>
                 <Grid container alignItems="center" justify="center" direction="column"
                     rowSpacing={3}>
                     <Grid item>
-                        <FormControl>
-                            <InputLabel id="projectName-select-label">Project Name</InputLabel>
+                    <FormControl size="small" sx={{mx: 1, minWidth: 150}}>
+                            <InputLabel id="projectName-select-label">Project</InputLabel>
                             <Select labelId="projectName-select-label"
-                                defaultValue={"i2sneaz59tmn"}
-                                name="projectId"
-                                value={
-                                    formValues.projectId
-                                }
-                                onChange={handleInputChange}>
-                                <MenuItem key="projectId" value="i2sneaz59tmn">
-                                    Test Project 1
-                                </MenuItem>
-                                <MenuItem key="projectId" value="i2sneaz59tmm">
-                                    Test Project 2
-                                </MenuItem>
-                            </Select>
+                                value={projectData}
+                                onChange={
+                                    (e) => setProjectData(e.target.value)
+                            }>
+                                {
+                                projectList.map((projectData, index) => {
+                                    return <MenuItem key={index}
+                                        value={projectData}>
+                                        {
+                                        projectData.project_name
+                                    }</MenuItem>
+                            })
+                            } </Select>
                         </FormControl>
                     </Grid>
                     <Grid item>
-                        <FormControl>
-                            <InputLabel id="floorNo-select-label">Floor No</InputLabel>
-                            <Select labelId="floorNo-select-label"
-                                defaultValue={"0"}
-                                name="floorNo"
-                                value={
-                                    formValues.floorNo
-                                }
-                                onChange={handleInputChange}>
-                                <MenuItem key="floorNo" value="0">
-                                    Ground Floor
-                                </MenuItem>
-                                <MenuItem key="floorNo" value="1">
-                                    1st Floor
-                                </MenuItem>
-                                <MenuItem key="floorNo" value="2">
-                                    2nd Floor
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
+                    <FormControl size="small" sx={{mx: 1, minWidth: 120}}>
+                        <InputLabel id="floorId-select-label">Level</InputLabel>
+                        <Select labelId="floorId-select-label"
+                            defaultValue={"FP000"}
+                            name="floorId"
+                            value={levelData}
+                            onChange={(e) => setLevelData(e.target.value)}>
+                                {levelList.map((levelData, index) => {
+                                    return <MenuItem key={index} value={levelData}>{"Floor " + levelData.floor_no}</MenuItem>
+                                })}
+                        </Select>
+                    </FormControl>
                     </Grid>
                     <Grid item>
-                        <FormControl>
-                            <InputLabel id="elementName-select-label">Element Name</InputLabel>
-                            <Select labelId="elementName-select-label"
-                                defaultValue={"EL001"}
-                                name="elementName"
-                                value={
-                                    formValues.elementName
-                                }
-                                onChange={handleInputChange}>
-                                <MenuItem key="elementName" value="EL001">
-                                    Floor
-                                </MenuItem>
-                                <MenuItem key="elementName" value="EL002">
-                                    Wall
-                                </MenuItem>
-                                <MenuItem key="elementName" value="EL003">
-                                    Door
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
+                    <FormControl size="small" sx={{mx: 1, minWidth: 120}}>
+                        <InputLabel id="elementName-select-label">Element</InputLabel>
+                        <Select labelId="elementName-select-label"
+                            // defaultValue={"EL001"}
+                            // name="elementId"
+                            value={elementData}
+                            onChange={(e) => setElementData(e.target.value)}>
+                                {elementList.map((elementData, index) => {
+                                    return <MenuItem key={index} value={elementData}>{elementData.element_name}</MenuItem>
+                                })}
+                        </Select>
+                    </FormControl>
                     </Grid>
                     <Grid item>
                         <TextField id="elementDescription-input" name="elementDescription" label="Element Description" type="text" multiline
@@ -129,7 +178,7 @@ const AddElementPage = () => { // Form Data
                     <Grid item>
                         <Typography sx={{mb: 2, color:"red"}}>Note: This Program Support Only PNG format. Please Convert The Plan File to PNG Format Before Uploading</Typography>
                         <Input fullWidth id="planImage-input" name="planImage" type="file"
-                        onChange={handleInputChange}
+                        onChange={handleFile}
                         />
                     </Grid>
                     <Grid item>

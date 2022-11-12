@@ -141,7 +141,12 @@ const ZoomImage = ({recordData}) => {
             })
 
             if (doAddMarkers && isMarkerNotClicked) {
-                setClickedCordinates({x: XY.x, y: XY.y});
+                
+
+                const imgRatio = handleCanvasSize(context);
+                // setClickedCordinates({x: XY.x, y: XY.y});
+                setClickedCordinates({x: XY.x*imgRatio, y: XY.y*imgRatio});
+
                 // Add New Marker
                 setFormValues(INIT_DATA);
                 handleOpen();
@@ -149,6 +154,18 @@ const ZoomImage = ({recordData}) => {
         }
 
 
+    }
+
+    const handleCanvasSize = (context) => {
+        const {width, height} = background;
+        const canvasWidth = context.canvas.getBoundingClientRect().width
+        // const canvasHeight = context.canvas.getBoundingClientRect().height
+
+        // console.log("Image Dims: ", width, height);
+        // console.log("Canvas Dims: ", canvasWidth, canvasHeight);
+        // console.log("Ratio", width/canvasWidth);
+
+        return width/canvasWidth
     }
 
     const handleMouseUp = () => setDragging(false);
